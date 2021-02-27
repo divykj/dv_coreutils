@@ -4,4 +4,4 @@ Trying to implement **[GNU Core Utilities](https://www.gnu.org/software/coreutil
 
 ## Implemented Utilities
 
-None so far 😕
+- **[`echo`](https://github.com/divykj/dv_coreutils/tree/master/packages/echo)**

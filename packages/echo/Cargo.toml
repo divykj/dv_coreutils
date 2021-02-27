@@ -1,0 +1,12 @@
+[package]
+name = "echo"
+version = "1.0.0"
+authors = ["Divya Jain <divykjain@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+snailquote = "0.3.0"
+
+[dependencies.clap]
+version = "2.33.3"
+default-features = false
