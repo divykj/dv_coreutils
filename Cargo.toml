@@ -1,7 +1,7 @@
 cargo-features = ["strip"]
 
 [workspace]
-members = ["packages/echo"]
+members = ["packages/echo", "packages/sleep"]
 
 [profile.release]
 opt-level = 'z'
