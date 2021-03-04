@@ -77,13 +77,13 @@ mod test {
     fn one_arg() {
         let (matches, echo_result, buffer) = test_params!(vec!["echo", "hello"]);
 
-        assert!(matches.values_of(ARG_INPUTS).is_some(),);
+        assert!(matches.values_of(ARG_INPUTS).is_some());
         assert_eq!(
             matches
                 .values_of(ARG_INPUTS)
                 .unwrap()
                 .collect::<Vec<&str>>(),
-            vec!["hello"],
+            vec!["hello"]
         );
         assert!(!matches.is_present(ARG_N));
         assert!(!matches.is_present(ARG_E));
@@ -96,13 +96,13 @@ mod test {
     fn multiple_args() {
         let (matches, echo_result, buffer) = test_params!(vec!["echo", "hello", "there"]);
 
-        assert!(matches.values_of(ARG_INPUTS).is_some(),);
+        assert!(matches.values_of(ARG_INPUTS).is_some());
         assert_eq!(
             matches
                 .values_of(ARG_INPUTS)
                 .unwrap()
                 .collect::<Vec<&str>>(),
-            vec!["hello", "there"],
+            vec!["hello", "there"]
         );
         assert!(!matches.is_present(ARG_N));
         assert!(!matches.is_present(ARG_E));
@@ -115,13 +115,13 @@ mod test {
     fn no_newline_arg() {
         let (matches, echo_result, buffer) = test_params!(vec!["echo", "-n", "hello", "there"]);
 
-        assert!(matches.values_of(ARG_INPUTS).is_some(),);
+        assert!(matches.values_of(ARG_INPUTS).is_some());
         assert_eq!(
             matches
                 .values_of(ARG_INPUTS)
                 .unwrap()
                 .collect::<Vec<&str>>(),
-            vec!["hello", "there"],
+            vec!["hello", "there"]
         );
         assert!(matches.is_present(ARG_N));
         assert!(!matches.is_present(ARG_E));
@@ -134,13 +134,13 @@ mod test {
     fn unescape_arg() {
         let (matches, echo_result, buffer) = test_params!(vec!["echo", "-e", "hello\\tthere"]);
 
-        assert!(matches.values_of(ARG_INPUTS).is_some(),);
+        assert!(matches.values_of(ARG_INPUTS).is_some());
         assert_eq!(
             matches
                 .values_of(ARG_INPUTS)
                 .unwrap()
                 .collect::<Vec<&str>>(),
-            vec!["hello\\tthere"],
+            vec!["hello\\tthere"]
         );
         assert!(!matches.is_present(ARG_N));
         assert!(matches.is_present(ARG_E));
