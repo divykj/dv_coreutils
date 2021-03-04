@@ -45,3 +45,107 @@ fn echo<W: Write>(cli_args: &ArgMatches, mut buffer: W) -> io::Result<()> {
 fn main() {
     echo(&get_app().get_matches(), stdout()).unwrap()
 }
+
+#[cfg(test)]
+mod test {
+    use super::{echo, get_app, ARG_E, ARG_INPUTS, ARG_N};
+
+    macro_rules! test_params {
+        ($args:expr) => {{
+            let app = get_app();
+            let matches = app.get_matches_from($args);
+            let mut buffer = Vec::new();
+            let echo_result = echo(&matches, &mut buffer);
+
+            (matches, echo_result, buffer)
+        }};
+    }
+
+    #[test]
+    fn no_args() {
+        let (matches, echo_result, buffer) = test_params!(vec!["echo"]);
+
+        assert!(matches.values_of(ARG_INPUTS).is_none());
+        assert!(!matches.is_present(ARG_N));
+        assert!(!matches.is_present(ARG_E));
+
+        assert!(echo_result.is_ok());
+        assert_eq!(String::from_utf8(buffer).unwrap(), "\n");
+    }
+
+    #[test]
+    fn one_arg() {
+        let (matches, echo_result, buffer) = test_params!(vec!["echo", "hello"]);
+
+        assert!(matches.values_of(ARG_INPUTS).is_some(),);
+        assert_eq!(
+            matches
+                .values_of(ARG_INPUTS)
+                .unwrap()
+                .collect::<Vec<&str>>(),
+            vec!["hello"],
+        );
+        assert!(!matches.is_present(ARG_N));
+        assert!(!matches.is_present(ARG_E));
+
+        assert!(echo_result.is_ok());
+        assert_eq!(String::from_utf8(buffer).unwrap(), "hello\n");
+    }
+
+    #[test]
+    fn multiple_args() {
+        let (matches, echo_result, buffer) = test_params!(vec!["echo", "hello", "there"]);
+
+        assert!(matches.values_of(ARG_INPUTS).is_some(),);
+        assert_eq!(
+            matches
+                .values_of(ARG_INPUTS)
+                .unwrap()
+                .collect::<Vec<&str>>(),
+            vec!["hello", "there"],
+        );
+        assert!(!matches.is_present(ARG_N));
+        assert!(!matches.is_present(ARG_E));
+
+        assert!(echo_result.is_ok());
+        assert_eq!(String::from_utf8(buffer).unwrap(), "hello there\n");
+    }
+
+    #[test]
+    fn no_newline_arg() {
+        let (matches, echo_result, buffer) = test_params!(vec!["echo", "-n", "hello", "there"]);
+
+        assert!(matches.values_of(ARG_INPUTS).is_some(),);
+        assert_eq!(
+            matches
+                .values_of(ARG_INPUTS)
+                .unwrap()
+                .collect::<Vec<&str>>(),
+            vec!["hello", "there"],
+        );
+        assert!(matches.is_present(ARG_N));
+        assert!(!matches.is_present(ARG_E));
+
+        assert!(echo_result.is_ok());
+        assert_eq!(String::from_utf8(buffer).unwrap(), "hello there");
+    }
+
+    #[test]
+    fn unescape_arg() {
+        let (matches, echo_result, buffer) = test_params!(vec!["echo", "-e", "hello\\tthere"]);
+
+        assert!(matches.values_of(ARG_INPUTS).is_some(),);
+        assert_eq!(
+            matches
+                .values_of(ARG_INPUTS)
+                .unwrap()
+                .collect::<Vec<&str>>(),
+            vec!["hello\\tthere"],
+        );
+        assert!(!matches.is_present(ARG_N));
+        assert!(matches.is_present(ARG_E));
+
+        assert!(echo_result.is_ok());
+        assert_eq!(String::from_utf8(buffer).unwrap(), "hello\tthere\n");
+    }
+}
